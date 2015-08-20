@@ -1,8 +1,11 @@
 var
   GFTable = "1tzpOQVWrppIM-tHGQTi0vP-fRLLR1H7dKWqLH6XJ"      // ID da tabela no Fusion Tables
 , Google_API_key = "AIzaSyCreptOWN3UAF4LdXLNt6XzMuPAbEciJH0" // Chave da API do Google
+, Mapbox_API_key = "pk.eyJ1IjoibmlnaHRvIiwiYSI6InY4aDA3clEifQ.Z0L7LrDGCcYA6c1xwOcdCA"
+, Mapbox_mapid = "mapbox.streets"
+, Mapbox_format = "png"
 , initialLatLon = [-22.941,-43.396]
-, initialZoomLevel = 11
+, initialZoomLevel = 10
 , mapData // guarda os dados obtidos do Fusion Tables
 , map     // instância de mapa do leaflet.
 , isYearRangeChanged = false
@@ -94,9 +97,12 @@ function createYearRangeInput(){
 }
 
 function initializeMap(){
+  //var tileLayerUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
+  var tileLayerUrl = 'https://api.mapbox.com/v4/' + Mapbox_mapid + '/{z}/{x}/{y}.' + Mapbox_format + '?access_token=' + Mapbox_API_key;
+
   map = L.map('map').setView(initialLatLon, initialZoomLevel);
 
-  L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+  L.tileLayer(tileLayerUrl, {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
 
