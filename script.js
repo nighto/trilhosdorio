@@ -86,9 +86,9 @@ function createYearRangeInput(){
     handleYearChange(value);
   }, {
     id: 'slider'
-  , size: '250px'
-  , min: 2013
-  , max: 2017
+  , size: '400px'
+  , min: 1850
+  , max: 2015
   , value: 2015
   }).addTo(map);
 }
