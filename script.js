@@ -45,8 +45,43 @@ function processMapData(year){
       if(mapData.rows[i][2] === 'Ferrovia'){
         var
           latLonArray = []
-        , popupText = '<b>' + mapData.rows[i][3] + '</b><br>' + mapData.rows[i][4];
+        , color
+        , popupText
         ;
+
+        // título
+        popupText = '<b>' + mapData.rows[i][3] + '</b>';
+
+        // bitola
+        if(mapData.rows[i][6] !== 'NaN'){
+          popupText += '<br><br><b>Bitola:</b> ' + mapData.rows[i][6];
+        }
+
+        // texto
+        popupText += '<br><br>' + mapData.rows[i][4];
+
+        // estado atual
+        if(mapData.rows[i][8]){
+          popupText += '<br><br><b>Status atual:</b> ';
+          switch(mapData.rows[i][8]){
+            case 'Passageiros':
+              popupText += 'Serviço de passageiros';
+              color = 'blue';
+              break;
+            case 'Carga':
+              popupText += 'Serviço de carga';
+              color = 'red';
+              break;
+            case 'Desativado':
+              popupText += 'Desativado (trilhos ainda existentes)';
+              color = 'brown';
+              break;
+            case 'Demolido':
+              popupText += 'Demolido (trilhos removidos)'
+              color = 'black';
+              break;
+          }
+        }
 
         // link
         if(mapData.rows[i][5]){
@@ -63,7 +98,14 @@ function processMapData(year){
         }
 
         // colocando no array
-        linesArray.push( L.polyline(latLonArray).bindPopup(popupText).addTo(map) );
+        linesArray.push(
+          L
+            .polyline(latLonArray, {
+              color: color
+            , opacity: 1
+            })
+            .bindPopup(popupText).addTo(map)
+        );
       }
     }
   }
