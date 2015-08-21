@@ -21,7 +21,10 @@ function handleYearChange(year){
 function processMapData(year){
   console.log(year, mapData);
 
-  var linesArray = [];
+  var
+    linesArray  = []
+  , pointsArray = []
+  ;
 
   // começa removendo tudo
   for(var i in map._layers){
@@ -70,7 +73,7 @@ function processMapData(year){
               break;
             case 'Carga':
               popupText += 'Serviço de carga';
-              color = 'red';
+              color = 'black';
               break;
             case 'Desativado':
               popupText += 'Desativado (trilhos ainda existentes)';
@@ -78,7 +81,7 @@ function processMapData(year){
               break;
             case 'Demolido':
               popupText += 'Demolido (trilhos removidos)'
-              color = 'black';
+              color = 'red';
               break;
           }
         }
@@ -104,7 +107,67 @@ function processMapData(year){
               color: color
             , opacity: 1
             })
-            .bindPopup(popupText).addTo(map)
+            .bindPopup(popupText)
+            .addTo(map)
+        );
+      }
+
+      // se for estação ou parada
+      if(mapData.rows[i][2] === 'Estacao'){
+        var
+          radius = 200
+        , color
+        , popupText
+        ;
+
+        // título
+        popupText = '<b>' + mapData.rows[i][3] + '</b>';
+
+        // texto
+        popupText += '<br><br>' + mapData.rows[i][4];
+
+        // estado atual
+        if(mapData.rows[i][8]){
+          popupText += '<br><br><b>Status atual:</b> ';
+          switch(mapData.rows[i][8]){
+            case 'Passageiros':
+              popupText += 'Estação de passageiros em funcionamento';
+              color = 'blue';
+              break;
+            case 'Carga':
+              popupText += 'Estação funciona como entreposto de serviço de cargas';
+              color = 'black';
+              break;
+            case 'Desativado':
+              popupText += 'Sem uso (centro cultural, museu, residência ou abandonada, mas de pé)';
+              color = 'brown';
+              break;
+            case 'Demolido':
+              popupText += 'Demolida'
+              color = 'red';
+              break;
+          }
+        }
+
+        // link
+        if(mapData.rows[i][5]){
+          popupText += '<br><br><a target="_blank" href="' + mapData.rows[i][5] + '">LINK</a>'
+        }
+
+        var
+          lat = mapData.rows[i][7].geometry.coordinates[1]
+        , lon = mapData.rows[i][7].geometry.coordinates[0]
+        ;
+
+        pointsArray.push(
+          L
+            .circle([lat, lon], radius, {
+              color: color
+            , opacity: 1
+            , fillOpacity: 1
+            })
+            .bindPopup(popupText)
+            .addTo(map)
         );
       }
     }
